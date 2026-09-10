@@ -186,6 +186,7 @@ describe('nrfml', () => {
             store.dispatch(startTrace(['live']));
             const errorHandler = nrfml.start.mock.calls[0][1];
             errorHandler(wiresharkClosedError);
+            // @ts-expect-error Stub
             const lastAction = store.getActions().at(-1);
             expect(lastAction.type).toBe(setTraceIsStopped.type);
         });
@@ -194,6 +195,8 @@ describe('nrfml', () => {
             store.dispatch(startTrace(['live', 'pcap']));
             const errorHandler = nrfml.start.mock.calls[0][1];
             errorHandler(wiresharkClosedError);
+
+            // @ts-expect-error Stub
             const lastAction = store.getActions().at(-1);
             expect(lastAction.type).toBe(setTraceIsStarted.type);
         });

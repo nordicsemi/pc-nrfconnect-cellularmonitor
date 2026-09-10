@@ -146,6 +146,7 @@ export const autoSetUartSerialPort =
             );
             return;
         }
+        // @ts-expect-error Stub
         const serialPortPath = device.serialPorts?.at(0)?.comName;
         if (serialPortPath) {
             connectToSerialPort(dispatch, serialPortPath);

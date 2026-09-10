@@ -286,6 +286,7 @@ export default {
                 return;
             }
 
+            // @ts-expect-error Stub
             const lastPacket = data.at(-1);
             if (lastPacket == null) {
                 return;

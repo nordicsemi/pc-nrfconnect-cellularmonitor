@@ -137,4 +137,5 @@ const autoSetTraceSerialPort =
  * @param {Array<device>} ports array of nrf-device-lib-js serialport objects
  * @returns {SerialPort} the selected serialport object
  */
+// @ts-expect-error Stub
 const autoSelectTraceSerialPort = (ports: DeviceSerialPort[]) => ports?.at(-1);
