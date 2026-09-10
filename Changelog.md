@@ -1,3 +1,9 @@
+## 2.8.1 - Unreleased
+
+### Changed
+
+- Updated dependencies.
+
 ## 2.8.0 - 2026-07-15
 
 ### Added
