@@ -10,8 +10,4 @@ const config =
         'serialport',
     ]);
 
-config.setupFilesAfterEnv.push(
-    path.join(__dirname, 'src', 'common', 'polyfillJest.js'),
-);
-
 module.exports = config;
