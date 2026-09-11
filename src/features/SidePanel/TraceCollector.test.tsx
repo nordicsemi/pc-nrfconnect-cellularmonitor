@@ -151,9 +151,7 @@ describe('TraceCollector', () => {
 
         it('should call nrfml start with selected sink configurations as arguments', async () => {
             const sinks = ['raw', 'pcap', 'live'] as (
-                | 'raw'
-                | 'pcap'
-                | 'live'
+                'raw' | 'pcap' | 'live'
             )[];
             render(<TraceCollector />, [
                 ...serialPortActions(sinks),

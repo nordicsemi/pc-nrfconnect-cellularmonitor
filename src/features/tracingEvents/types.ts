@@ -11,11 +11,7 @@ import { type ActivityStatus } from './at/commandProcessors/deviceActivityStatus
 import { type Mode as TXReductionMode } from './at/commandProcessors/TXPowerReduction';
 
 export type PacketFormat =
-    | 'at'
-    | 'nas-eps'
-    | `lte-rrc.${string}`
-    | 'ip'
-    | 'modem_trace';
+    'at' | 'nas-eps' | `lte-rrc.${string}` | 'ip' | 'modem_trace';
 
 export interface State {
     // What value to use in order to show the latest LTE network connection
@@ -215,15 +211,7 @@ export type RRCState =
     | undefined;
 export type NetworkStatusNotifications = 0 | 1 | 2 | 3 | 4 | 5 | undefined;
 export type ConnectionEvaluationResult =
-    | 0
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | undefined;
+    0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | undefined;
 // Higher values means smaller energy consumption.
 export type ConevalEnergyEstimate = 5 | 6 | 7 | 8 | 9 | undefined;
 export type CoverageEnhancementLevel = 0 | 1 | 2 | 3 | 255 | undefined;
@@ -329,8 +317,7 @@ export const isValidBitmask = (bitmask: string): bitmask is Bitmask =>
 
 // TODO: Is this a really bad idea?
 export type Bitmask = `${0 | 1}${0 | 1}${0 | 1}${0 | 1}${0 | 1}${0 | 1}${
-    | 0
-    | 1}${0 | 1}`;
+    0 | 1}${0 | 1}`;
 type TimeUnits = 'seconds' | 'minutes' | 'decihours' | 'hours' | 'days';
 
 type T_Keys = 'T3324' | 'T3402' | 'T3412';
