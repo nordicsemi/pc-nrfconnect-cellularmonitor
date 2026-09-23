@@ -290,7 +290,7 @@ export const startTrace =
 
         await dispatch(
             setupBuilder(
-                { type: 'device', port: tracePort, startTime: new Date() },
+                source,
                 formats,
                 async task => {
                     logger.info('Started tracefile');
