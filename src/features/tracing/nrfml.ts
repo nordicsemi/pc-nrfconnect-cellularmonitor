@@ -228,15 +228,16 @@ export const convertTraceFile =
                     }),
                 );
             }),
-        ).catch(err => {
-            dispatch(setTraceIsStopped());
-            dispatch(setDetectingTraceDb(false));
-            setLoading(false);
+        )
+            .then(() => logger.info(`Successfully converted ${path} to pcap`))
+            .catch(err => {
+                dispatch(setTraceIsStopped());
+                dispatch(setDetectingTraceDb(false));
 
-            logger.error(`Failed conversion to pcap: ${describeError(err)}`);
-        });
-
-        logger.info(`Successfully converted ${path} to pcap`);
+                logger.error(
+                    `Failed conversion to pcap: ${describeError(err)}`,
+                );
+            });
     };
 
 export const startTrace =
@@ -375,21 +376,22 @@ export const readRawTrace =
                 true,
                 true,
             ),
-        ).catch(err => {
-            logger.error(
-                `Error when reading trace from ${path}: ${describeError(err)}`,
-            );
+        )
+            .then(() => logger.info(`Completed reading trace from ${path}`))
+            .catch(err => {
+                logger.error(
+                    `Error when reading trace from ${path}: ${describeError(err)}`,
+                );
 
-            if (
-                describeError(err).includes(
-                    'Failed to detect modem trace database',
-                )
-            ) {
-                dispatch(setDetectTraceDbFailed(true));
-            }
-        });
+                if (
+                    describeError(err).includes(
+                        'Failed to detect modem trace database',
+                    )
+                ) {
+                    dispatch(setDetectTraceDbFailed(true));
+                }
+            });
 
-        logger.info(`Completed reading trace from ${path}`);
         setLoading(false);
         setTimeout(() => tracePacketEvents.emit('stop-process'), 1000);
     };
