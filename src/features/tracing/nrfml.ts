@@ -219,7 +219,7 @@ export const convertTraceFile =
         setLoading(true);
 
         await dispatch(
-            setupBuilder(source, ['live'], task => {
+            setupBuilder(source, sinks, task => {
                 logger.info(`Started converting ${path} to pcap.`);
                 dispatch(
                     setTraceIsStarted({
