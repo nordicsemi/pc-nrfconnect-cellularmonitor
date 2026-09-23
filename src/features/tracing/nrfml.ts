@@ -238,6 +238,7 @@ export const convertTraceFile =
                     `Failed conversion to pcap: ${describeError(err)}`,
                 );
             });
+        setLoading(false);
     };
 
 export const startTrace =
