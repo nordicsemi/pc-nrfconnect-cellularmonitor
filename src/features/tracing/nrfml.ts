@@ -110,6 +110,16 @@ const setupBuilder =
         const hasSelectedManualDbFile =
             getManualDbFilePath(getState()) !== undefined;
         const builder = new TraceTaskBuilder();
+        const cleanup: (() => void)[] = [];
+
+        const displayDetectingTraceDbMessage =
+            !hasSelectedManualDbFile && !hideDetectingTraceDbMessage;
+
+        if (displayDetectingTraceDbMessage) {
+            cleanup.push(() => {
+                dispatch(setDetectingTraceDb(false));
+            });
+        }
 
         builder
             .withDataSource(
@@ -125,9 +135,7 @@ const setupBuilder =
             .withProgressCb(
                 makeProgressCallback(dispatch, {
                     detectingTraceDb: !hasSelectedManualDbFile,
-                    displayDetectingTraceDbMessage:
-                        !hasSelectedManualDbFile &&
-                        !hideDetectingTraceDbMessage,
+                    displayDetectingTraceDbMessage,
                 }),
             );
 
@@ -175,7 +183,6 @@ const setupBuilder =
             }
         });
 
-        let cleanup = () => {};
         if (updateChart) {
             const packets: StreamPacket[] = [];
             const throttle = setInterval(() => {
@@ -195,15 +202,19 @@ const setupBuilder =
 
             dispatch(setTraceDataReceived(false));
             tracePacketEvents.emit('start-process');
-            cleanup = () => {
+            cleanup.push(() => {
                 clearInterval(throttle);
                 notifyListeners(packets.splice(0, packets.length));
-            };
+            });
         }
 
-        const task = await builder.spawn();
-        onStartTrace(task);
-        await waitForTask(task).finally(() => cleanup());
+        try {
+            const task = await builder.spawn();
+            onStartTrace(task);
+            await waitForTask(task);
+        } finally {
+            cleanup.forEach(f => f());
+        }
     };
 
 export const convertTraceFile =
