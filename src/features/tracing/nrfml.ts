@@ -63,7 +63,6 @@ import {
     getTaskAbortHandle,
     getTraceSerialPort,
     setDetectingTraceDb,
-    setDetectTraceDbFailed,
     setManualDbFilePath,
     setTraceDataReceived,
     setTraceIsStarted,
@@ -394,14 +393,6 @@ export const readRawTrace =
                 logger.error(
                     `Error when reading trace from ${path}: ${describeError(err)}`,
                 );
-
-                if (
-                    describeError(err).includes(
-                        'Failed to detect modem trace database',
-                    )
-                ) {
-                    dispatch(setDetectTraceDbFailed(true));
-                }
             });
 
         setLoading(false);
