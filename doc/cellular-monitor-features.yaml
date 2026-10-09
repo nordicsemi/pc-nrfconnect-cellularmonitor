@@ -101,7 +101,7 @@ general_app_features:
     description: Show field descriptions, related AT commands, and doc links on hover
   - id: packet_event_viewer
     name: Packet Event Viewer
-    description: Visualize communication at AT, RRC, NAS, and IP levels
+    description: Visualize communication at the AT, RRC, NAS, and IP levels
   - id: packet_event_viewer_playback_scrub
     name: Packet Event Viewer playback/scrub
     description: Drag and scroll the event graph to play back and focus on trace segments
