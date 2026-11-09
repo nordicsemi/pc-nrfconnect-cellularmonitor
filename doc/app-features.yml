@@ -8,7 +8,7 @@ statuses: [full, unsupported, not_applicable]
 general_app_features:
   - id: select_device
     name: Select device
-    description: "Select a connected device from a drop-down list to connect to it"
+    description: Select a connected device from a drop-down list to connect to it
   - id: start_modem_trace_capture
     name: Start modem trace capture
     description: Start capturing a live modem trace from the selected device
@@ -23,7 +23,7 @@ general_app_features:
     description: Open a dialog with localized partner links to purchase supported devices
   - id: show_modal_on_the_start
     name: Show modal on the start
-    description: "Display 'How to use Cellular Monitor' info modal window after app launch"
+    description: Display 'How to use Cellular Monitor' info modal window after app launch
   - id: display_trace_file_information
     name: Display trace file information
     description: Show the trace file name and size during capture, and open its location on click
@@ -32,7 +32,7 @@ general_app_features:
     description: Automatically select the trace database version matching the modem firmware
   - id: manual_modem_trace_database_selection
     name: Manual modem trace database selection
-    description: "Manually select the trace decoding database version from a drop-down list"
+    description: Manually select the trace decoding database version from a drop-down list
   - id: select_modem_trace_serial_port
     name: Select modem trace serial port
     description: Select the serial port used to receive the modem trace
@@ -50,18 +50,18 @@ general_app_features:
     description: Play back trace files captured by the Cellular Monitor app
   - id: play_back_nrfutil_trace_files
     name: Play back nrfutil trace files
-    description: "Play back trace files created with nRF Util's trace command"
+    description: Play back trace files created with nRF Util's trace command
   - id: play_back_legacy_trace_collector_bin_files
     name: Play back legacy Trace Collector .bin files
     description: Play back .bin trace files from the legacy Trace Collector app
   - id: play_back_j_link_rtt_trace_files
-    name: "Play back J-Link RTT trace files"
-    description: "Play back J-Link RTT-captured modem traces (captured outside the tool)"
+    name: Play back J-Link RTT trace files
+    description: Play back J-Link RTT-captured modem traces (captured outside the tool)
   - id: play_back_memfault_rtt_trace_files
     name: Play back Memfault RTT trace files
     description: Play back trace files downloaded from Memfault
   - id: auto_detect_tracefile_modem_firmware_version
-    name: "Auto-detect tracefile modem firmware version"
+    name: Auto-detect tracefile modem firmware version
     description: Automatically detect the modem firmware version from a loaded trace file
   - id: refresh_dashboard
     name: Refresh dashboard
@@ -83,21 +83,21 @@ general_app_features:
     description: Convert a saved .mtrace/.bin file to PcapNG and open it in Wireshark
   - id: wireshark_autodetection
     name: Wireshark autodetection
-    description: If the app cannot find a Wireshark installation, it will show a link to either install Wireshark or select the executable.
+    description: If the app cannot find a Wireshark installation, it will show a link to either install Wireshark or select the executable
   - id: wireshark_custom_path
     name: Wireshark custom path
-    description: If WS is installed in cusom location, select the exec in app
+    description: If WS is installed in custom location, select the exec in app
   - id: open_serial_terminal
     name: Open Serial Terminal
     description: Open the Serial Terminal app to view modem dialog and application logging
   - id: display_connection_status
     name: Display connection status
-    description: "Display real-time trace/connection stage status (Trace, SIM, LTE, PDN)"
+    description: Display real-time trace/connection stage status (Trace, SIM, LTE, PDN)
   - id: dashboard_connection_visualization
     name: Dashboard connection visualization
     description: Display detailed cellular connection data across dashboard panels
   - id: dashboard_field_mouse_over_details
-    name: "Dashboard field mouse-over details"
+    name: Dashboard field mouse-over details
     description: Show field descriptions, related AT commands, and doc links on hover
   - id: packet_event_viewer
     name: Packet Event Viewer
@@ -107,7 +107,7 @@ general_app_features:
     description: Drag and scroll the event graph to play back and focus on trace segments
   - id: packet_event_viewer_timeline_mode
     name: Packet Event Viewer timeline mode
-    description: "Switch event display between equally-spaced and time-based views"
+    description: Switch event display between equally-spaced and time-based views
   - id: packet_event_viewer_layer_filtering
     name: Packet Event Viewer layer filtering
     description: Hide or show specific event layers
@@ -144,7 +144,7 @@ device_specific_features:
 shared_features:
   - id: restore_defaults
     name: Restore defaults
-    description: "Restore all app's settings to default"
+    description: Restore all app's settings to default
   - id: give_feedback
     name: Give Feedback
     description: Send a feedback message
@@ -171,7 +171,7 @@ shared_features:
     description: Clear the log window
 
 supported_devices:
-  - device: "Nordic Thingy:91"
+  - device: Nordic Thingy:91
     pca: PCA20035
     verification_version:
     support:
@@ -180,7 +180,7 @@ supported_devices:
       program_modem_firmware: full
       mcuboot_programming: full
 
-  - device: "Nordic Thingy:91 X"
+  - device: Nordic Thingy:91 X
     pca: PCA20049
     verification_version:
     support:
@@ -262,14 +262,14 @@ supported_devices:
       mcuboot_programming: unsupported
 
 unsupported_devices:
-  - device: "Nordic Thingy:52"
+  - device: Nordic Thingy:52
     pca: PCA20020
 
-  - device: "Nordic Thingy:53"
+  - device: Nordic Thingy:53
     pca: PCA20053
 
   - device: nPM 1300 EK
-    pca: PCA10152  
+    pca: PCA10152
 
   - device: nPM 1304 EK
     pca: PCA10195
@@ -327,5 +327,3 @@ unsupported_devices:
 
   - device: PPK2
     pca: PCA63100
-
-  
