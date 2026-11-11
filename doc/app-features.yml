@@ -22,13 +22,13 @@ general_app_features:
     name: Buy development kit
     description: Open a dialog with localized partner links to purchase supported devices
   - id: show_modal_on_the_start
-    name: Show modal on the start
+    name: Show modal on start
     description: Display 'How to use Cellular Monitor' info modal window after app launch
   - id: display_trace_file_information
     name: Display trace file information
     description: Show the trace file name and size during capture, and open its location on click
   - id: autoselect_modem_trace_database
-    name: Autoselect modem trace database
+    name: Auto-select modem trace database
     description: Automatically select the trace database version matching the modem firmware
   - id: manual_modem_trace_database_selection
     name: Manual modem trace database selection
@@ -40,8 +40,8 @@ general_app_features:
     name: Select terminal serial port
     description: Select the serial port used to send AT commands to the device
   - id: autoselect_serial_ports_values
-    name: Autoselect serial ports values
-    description: Save and autoselect the modem trace and terminal serial ports between sessions
+    name: Auto-select serial port values
+    description: Save and auto-select the modem trace and terminal serial ports between sessions
   - id: load_trace_file_for_playback
     name: Load trace file for playback
     description: Load a previously saved trace file for playback and analysis
@@ -70,8 +70,8 @@ general_app_features:
     name: Refresh dashboard on start
     description: Automatically refresh the dashboard when tracing starts
   - id: autoselect_trace_options
-    name: Autoselect trace options
-    description: Save and autoselect trace options values between sessions
+    name: Auto-select trace options
+    description: Save and auto-select trace options values between sessions
   - id: send_at_commands_from_dashboard_fields
     name: Send AT commands from dashboard fields
     description: Run related AT commands directly from dashboard fields while capturing
@@ -86,7 +86,7 @@ general_app_features:
     description: If the app cannot find a Wireshark installation, it will show a link to either install Wireshark or select the executable
   - id: wireshark_custom_path
     name: Wireshark custom path
-    description: If WS is installed in custom location, select the exec in app
+    description: If Wireshark is installed in a custom location, select the executable file in app
   - id: open_serial_terminal
     name: Open Serial Terminal
     description: Open the Serial Terminal app to view modem dialog and application logging
@@ -181,7 +181,7 @@ supported_devices:
       mcuboot_programming: full
 
   - device: Nordic Thingy:91 X
-    pca: PCA20049
+    pca: PCA20065
     verification_version:
     support:
       reset_device_on_start: unsupported
@@ -236,6 +236,24 @@ supported_devices:
 
   - device: nRF9251 DK
     pca: PCA10218
+    verification_version:
+    support:
+      reset_device_on_start: unsupported
+      program_application_firmware: unsupported
+      program_modem_firmware: unsupported
+      mcuboot_programming: unsupported
+
+  - device: nRF93M1 DK
+    pca: PCA10232
+    verification_version:
+    support:
+      reset_device_on_start: unsupported
+      program_application_firmware: unsupported
+      program_modem_firmware: unsupported
+      mcuboot_programming: unsupported
+
+  - device: nRF93M1 DK
+    pca: PCA10237
     verification_version:
     support:
       reset_device_on_start: unsupported
@@ -306,12 +324,6 @@ unsupported_devices:
 
   - device: nRF7002 DK
     pca: PCA10143
-
-  - device: nRF93M1 DK
-    pca: PCA10232
-
-  - device: nRF93M1 DK
-    pca: PCA10237
 
   - device: PPK2
     pca: PCA63100
