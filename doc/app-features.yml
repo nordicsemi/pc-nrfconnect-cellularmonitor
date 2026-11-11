@@ -133,10 +133,10 @@ device_specific_features:
     description: Reset the device before starting a new trace
   - id: program_application_firmware
     name: Program application firmware
-    description: Program a precompiled sample application to the device over USB via MCUboot
+    description: Program a precompiled sample application to the device over USB
   - id: program_modem_firmware
     name: Program modem firmware
-    description: Program modem firmware to the device over USB via MCUboot
+    description: Program modem firmware to the device over USB
   - id: mcuboot_programming
     name: MCUboot programming
     description: Program firmware using the MCUboot workflow
