@@ -243,24 +243,6 @@ supported_devices:
       program_modem_firmware: unsupported
       mcuboot_programming: unsupported
 
-  - device: nRF93M1 DK
-    pca: PCA10232
-    verification_version:
-    support:
-      reset_device_on_start: unsupported
-      program_application_firmware: unsupported
-      program_modem_firmware: unsupported
-      mcuboot_programming: unsupported
-
-  - device: nRF93M1 DK
-    pca: PCA10237
-    verification_version:
-    support:
-      reset_device_on_start: unsupported
-      program_application_firmware: unsupported
-      program_modem_firmware: unsupported
-      mcuboot_programming: unsupported
-
 unsupported_devices:
   - device: Nordic Thingy:52
     pca: PCA20020
@@ -324,6 +306,12 @@ unsupported_devices:
 
   - device: nRF7002 DK
     pca: PCA10143
+
+  - device: nRF93M1 DK
+    pca: PCA10232
+
+  - device: nRF93M1 DK
+    pca: PCA10237
 
   - device: PPK2
     pca: PCA63100
