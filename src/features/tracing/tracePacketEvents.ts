@@ -49,12 +49,18 @@ const parseNetworkType = (format: string): NetworkType => {
 
 const packetsToEvent = (packet: StreamPacket) =>
     ({
-        format: formatToLabel(packet.format || ''),
-        networkType: packet.format?.startsWith('lte_rrc')
-            ? parseNetworkType(packet.format)
-            : undefined,
+        format:
+            packet.kind.type === 'Dissectable'
+                ? formatToLabel(packet.kind.dissector || '')
+                : '',
+        // was: packet.format?.startsWith('lte_rrc')
+        networkType:
+            packet.kind?.type === 'Dissectable' &&
+            packet.kind?.dissector.startsWith('lte_rrc')
+                ? parseNetworkType(packet.kind.dissector)
+                : undefined,
         timestamp: (packet.timestamp.getMilliseconds() ?? 0) / 1000,
-        data: packet.data,
+        data: packet.kind.data,
         sequenceNumber: Number(packet.sequenceNumber),
     }) as TraceEvent;
 

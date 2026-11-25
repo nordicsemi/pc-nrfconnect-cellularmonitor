@@ -15,10 +15,7 @@ export const rawTraceData = [
         },
         format: 'at',
 
-        timestamp: {
-            resolution: 'NRFML_TIMESTAMP_MICROSECONDS',
-            value: 1665058971613873,
-        },
+        timestamp: new Date(1665058971613873),
     },
     {
         packet_data: {
@@ -355,16 +352,13 @@ export const rawTraceData = [
         },
     },
     {
-        packet_data: {
-            type: 'Buffer',
-            data: [79, 75, 13, 10],
+        kind: {
+            type: 'Dissectable',
+            dissector: 'at',
+            data: new Uint8Array([79, 75, 13, 10]),
         },
-        format: 'at',
-
-        timestamp: {
-            resolution: 'NRFML_TIMESTAMP_MICROSECONDS',
-            value: 1665058971844616,
-        },
+        // timestamp: new Date(1665058971844616),
+        // sequenceNumber: 1,
     },
     {
         packet_data: {
@@ -415,21 +409,16 @@ export const rawTraceData = [
         },
     },
     {
-        packet_data: {
-            type: 'Buffer',
-            data: [
+        kind: {
+            type: 'Dissectable',
+            dissector: 'lte_rrc.bcch_dl_sch',
+            data: new Uint8Array([
                 72, 73, 8, 5, 9, 1, 32, 36, 114, 8, 25, 48, 128, 129, 132, 79,
                 41, 37, 250, 92, 22, 130, 22, 118, 111, 255, 255, 255, 255, 253,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            ],
-        },
-        format: 'lte_rrc.bcch_dl_sch',
-
-        timestamp: {
-            resolution: 'NRFML_TIMESTAMP_MICROSECONDS',
-            value: 1665058972956830,
+            ]),
         },
     },
     {
@@ -463,7 +452,7 @@ export const rawTraceData = [
                 170, 192, 106, 1, 0, 94, 1, 148,
             ],
         },
-        format: 'nas-eps',
+        format: 'nas-eps', // Dissectable
 
         timestamp: {
             resolution: 'NRFML_TIMESTAMP_MICROSECONDS',
@@ -1866,7 +1855,7 @@ export const rawTraceData = [
                 102, 99, 108, 111, 117, 100, 3, 99, 111, 109, 0, 0, 1, 0, 1,
             ],
         },
-        format: 'ip',
+        format: 'ip', // Dissectable as well
         timestamp: {
             resolution: 'NRFML_TIMESTAMP_MICROSECONDS',
             value: 1665058976037488,

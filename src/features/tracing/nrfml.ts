@@ -25,6 +25,7 @@ import {
     telemetry,
 } from '@nordicsemiconductor/pc-nrfconnect-shared';
 import { NrfutilDeviceLib } from '@nordicsemiconductor/pc-nrfconnect-shared/nrfutil/device';
+import { join } from 'path';
 import { pathToFileURL } from 'url';
 
 import { displayName } from '../../../package.json';
@@ -77,10 +78,16 @@ const progressConfigs = (source: SourceFormat, sinks: TraceFormat[]) =>
         path: sinkFile(source, format),
     }));
 
+const TRACE_DATABASE_CONFIG_FILE = 'config_v3.json';
+
 // Need to figure out what to do with the cache directory
 // Files from here aren't added to the cache, and files in the cache are not added to the config file
 // Function returns either path to trace DB config or URL to the folder
 const getModemDbPath = (state: RootState, source: SourceFormat) => {
+    console.log('-- > source', source);
+    console.log('-- > source.autoDetectedManualDbFile', source.autoDetectedManualDbFile);
+    console.log('-- > source.path', source.path);
+
     if (source.type === 'device' && source.autoDetectedManualDbFile) {
         return source.autoDetectedManualDbFile;
     }
@@ -89,9 +96,21 @@ const getModemDbPath = (state: RootState, source: SourceFormat) => {
         return manualDbFilePath;
     }
 
-    return pathToFileURL(autoDetectDbRootFolder()).toString();
+    // return pathToFileURL(autoDetectDbRootFolder()).toString();
+    const path = join(
+        autoDetectDbRootFolder(),
+        `${TRACE_DATABASE_CONFIG_FILE}`,
+    );
+
+    console.log('---> ', path);
+
+    return path;
 };
 
+/*
+14:29:52.457	Error when creating trace: Error: Found UUID e7a1c54a-b07c-4512-9c3e-8ecbbfe2641d from the trace stream, but the provided trace database has UUID 11866dbb-3d51-4226-8098-59dc6b9b5a50. This will most likely cause traces to be incorrectly decoded. Make sure that the provided trace has a corresponding database.
+14:29:52.457	Finished tracefile
+ */
 const setupBuilder =
     (
         source: SourceFormat,
@@ -123,8 +142,14 @@ const setupBuilder =
                           new SerialPortBuilder(source.port, 1_000_000),
                       ),
             )
-            .withModemDecoder(
-                new ModemTraceDecoderOpts(getModemDbPath(getState(), source)),
+            .withModemDecoder( // TODO: if selected DB manually -> must be fromDatabaseFile(); cleanup code, now not good
+                hasSelectedManualDbFile ?
+                    ModemTraceDecoderOpts.fromDatabaseFile(
+                        getModemDbPath(getState(), source),
+                    ) :
+                ModemTraceDecoderOpts.fromDatabaseConfig(
+                    getModemDbPath(getState(), source),
+                ),
             )
             .withProgressCb(
                 makeProgressCallback(dispatch, {
@@ -157,8 +182,8 @@ const setupBuilder =
                 }
                 case 'live': {
                     // TODO: wireshark must be conditional, do not turn it on every file load
-                    const enableWireshark = false;
-                    if (!enableWireshark) break;
+                    // const enableWireshark = false;
+                    // if (!enableWireshark) break;
 
                     const opts = new WiresharkSinkOpts()
                         .withWiresharkPath(
@@ -193,7 +218,7 @@ const setupBuilder =
                 const { dataReceived } = getState().app.trace;
                 if (!dataReceived) dispatch(setTraceDataReceived(true));
 
-                if (data.format !== 'modem_trace') {
+                if (data.kind.type !== 'Raw') {
                     packets.push(data);
                 }
             });
@@ -330,6 +355,7 @@ export const startTrace =
                     }
 
                     if (getRefreshOnStart(getState())) {
+                        console.log('formats', formats);
                         const timeout = formats.includes('live')
                             ? 10_000
                             : 5_000;
@@ -343,9 +369,31 @@ export const startTrace =
                         );
                     }
 
-                    const abortHandle = task.abortHandle();
-                    reloadHandler = () => abortHandle?.cancel();
-                    window.addEventListener('beforeunload', reloadHandler);
+                    /*
+                    // these are just comments to keep, will cleanup
+
+                    1)
+                    export interface StreamPacket {
+                      kind: PacketKind
+                      timestamp: Date
+                      metaFields?: string // JSON string; if file input: data_offset + data_size + modem_db_path; if live: data_offset + modem_db_path
+                      sequenceNumber: bigint // incrementing packet number, not used
+                    }
+
+                    2)
+                    // type: 'Dissectable': direction = status of AT command (send / received)
+                     */
+                    // TODO: get lock fixed, then add back
+                    // try {
+                    //     const abortHandle = task.abortHandle();
+                    //     console.log('abortHandle', abortHandle);
+                    //     reloadHandler = () => abortHandle?.cancel();
+                    //     window.addEventListener('beforeunload', reloadHandler);
+                    // } catch (err) {
+                    //     console.log('Error try-catch abort: ', err);
+                    // }
+
+
                 },
                 true,
             ),

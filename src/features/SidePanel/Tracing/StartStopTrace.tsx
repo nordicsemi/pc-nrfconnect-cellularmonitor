@@ -61,6 +61,12 @@ export default () => {
     // Wait for AT modem detection on first render for 2s
     useEffect(() => disableForAWhile(), []);
 
+    useEffect(() => {
+        setInterval(() => {
+            console.log('Benceman')
+        }, 1000)
+    }, []);
+
     return (
         <>
             <StartStopButton
