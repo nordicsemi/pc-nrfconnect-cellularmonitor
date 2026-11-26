@@ -12,7 +12,6 @@ import { type State } from '../types';
 import { initialState } from '.';
 import { rawTraceData } from './traceSample';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const expectedState = {
     networkStatusLastUpdate: 'networkStatus',
 
@@ -118,12 +117,12 @@ const expectedState = {
 test.skip('Trace is read properly', () => {
     let state = initialState();
     let sequenceNumber = 0;
-    rawTraceData.forEach(jsonPacket => {
+    // @ts-expect-error todo: fix payloads
+    rawTraceData.forEach((jsonPacket: StreamPacket) => {
         notifyListeners([
             {
                 // type: '',
                 timestamp: new Date(),
-                //@ts-expect-error todo: fix payloads
                 kind: jsonPacket.kind,
                 // data: new Uint8Array(jsonPacket.packet_data.data),
                 sequenceNumber: BigInt((sequenceNumber += 1)),
