@@ -4,14 +4,15 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-import { type StreamPacket } from '@nordicsemi/nrfml-js';
-
-import { events, notifyListeners } from '../../tracing/tracePacketEvents';
-import { convert } from '..';
+// import { type StreamPacket } from '@nordicsemi/nrfml-js';
+//
+// import { events, notifyListeners } from '../../tracing/tracePacketEvents';
+// import { convert } from '..';
 import { type State } from '../types';
-import { initialState } from '.';
-import { rawTraceData } from './traceSample';
+// import { initialState } from '.';
+// import { rawTraceData } from './traceSample';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const expectedState = {
     networkStatusLastUpdate: 'networkStatus',
 

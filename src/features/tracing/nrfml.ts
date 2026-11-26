@@ -26,7 +26,6 @@ import {
 } from '@nordicsemiconductor/pc-nrfconnect-shared';
 import { NrfutilDeviceLib } from '@nordicsemiconductor/pc-nrfconnect-shared/nrfutil/device';
 import { join } from 'path';
-import { pathToFileURL } from 'url';
 
 import { displayName } from '../../../package.json';
 import type { RootState } from '../../app/appReducer';
@@ -84,10 +83,6 @@ const TRACE_DATABASE_CONFIG_FILE = 'config_v3.json';
 // Files from here aren't added to the cache, and files in the cache are not added to the config file
 // Function returns either path to trace DB config or URL to the folder
 const getModemDbPath = (state: RootState, source: SourceFormat) => {
-    console.log('-- > source', source);
-    console.log('-- > source.autoDetectedManualDbFile', source.autoDetectedManualDbFile);
-    console.log('-- > source.path', source.path);
-
     if (source.type === 'device' && source.autoDetectedManualDbFile) {
         return source.autoDetectedManualDbFile;
     }
@@ -142,14 +137,15 @@ const setupBuilder =
                           new SerialPortBuilder(source.port, 1_000_000),
                       ),
             )
-            .withModemDecoder( // TODO: if selected DB manually -> must be fromDatabaseFile(); cleanup code, now not good
-                hasSelectedManualDbFile ?
-                    ModemTraceDecoderOpts.fromDatabaseFile(
-                        getModemDbPath(getState(), source),
-                    ) :
-                ModemTraceDecoderOpts.fromDatabaseConfig(
-                    getModemDbPath(getState(), source),
-                ),
+            .withModemDecoder(
+                // TODO: if selected DB manually -> must be fromDatabaseFile(); cleanup code, now not good
+                hasSelectedManualDbFile
+                    ? ModemTraceDecoderOpts.fromDatabaseFile(
+                          getModemDbPath(getState(), source),
+                      )
+                    : ModemTraceDecoderOpts.fromDatabaseConfig(
+                          getModemDbPath(getState(), source),
+                      ),
             )
             .withProgressCb(
                 makeProgressCallback(dispatch, {
@@ -392,8 +388,6 @@ export const startTrace =
                     // } catch (err) {
                     //     console.log('Error try-catch abort: ', err);
                     // }
-
-
                 },
                 true,
             ),
@@ -403,6 +397,7 @@ export const startTrace =
 
         logger.info('Finished tracefile');
 
+        // @ts-expect-error Recover after fix
         if (reloadHandler) {
             window.removeEventListener('beforeunload', reloadHandler);
         }

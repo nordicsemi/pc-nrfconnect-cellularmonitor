@@ -63,8 +63,8 @@ export default () => {
 
     useEffect(() => {
         setInterval(() => {
-            console.log('Benceman')
-        }, 1000)
+            console.log('Benceman');
+        }, 1000);
     }, []);
 
     return (
