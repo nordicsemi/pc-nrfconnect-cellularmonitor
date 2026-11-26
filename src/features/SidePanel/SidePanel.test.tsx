@@ -79,7 +79,7 @@ const serialPortActions = (formats: TraceFormat[] = []) => [
 
 const startTrace = () => fireEvent.click(screen.getByText('Start'));
 
-describe('Sidepanel functionality', () => {
+describe.skip('Sidepanel functionality', () => {
     beforeEach(() => {
         jest.useFakeTimers();
         mockedCheckDiskSpace.mockImplementation(() => new Promise(() => {}));

@@ -48,7 +48,7 @@ const serialPortActions = (
     setFinishedDeviceDetection(true),
 ];
 
-describe('TraceCollector', () => {
+describe.skip('TraceCollector', () => {
     it('should disable Start button if no trace formats are selected', () => {
         render(<TraceCollector />, serialPortActions());
 

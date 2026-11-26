@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-// import { type StreamPacket } from '@nordicsemi/nrfml-js';
-//
-// import { events, notifyListeners } from '../../tracing/tracePacketEvents';
-// import { convert } from '..';
+import { type StreamPacket } from '@nordicsemi/nrfml-js';
+
+import { events, notifyListeners } from '../../tracing/tracePacketEvents';
+import { convert } from '..';
 import { type State } from '../types';
-// import { initialState } from '.';
-// import { rawTraceData } from './traceSample';
+import { initialState } from '.';
+import { rawTraceData } from './traceSample';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const expectedState = {
@@ -115,7 +115,7 @@ const expectedState = {
     searchStatus2: true,
 } as Partial<State>;
 
-/* test('Trace is read properly', () => {
+test.skip('Trace is read properly', () => {
     let state = initialState();
     let sequenceNumber = 0;
     rawTraceData.forEach(jsonPacket => {
@@ -123,6 +123,7 @@ const expectedState = {
             {
                 // type: '',
                 timestamp: new Date(),
+                //@ts-expect-error todo: fix payloads
                 kind: jsonPacket.kind,
                 // data: new Uint8Array(jsonPacket.packet_data.data),
                 sequenceNumber: BigInt((sequenceNumber += 1)),
@@ -133,4 +134,4 @@ const expectedState = {
         state = convert(packet, state);
     });
     expect(state).toEqual(expectedState);
-}); */
+});
