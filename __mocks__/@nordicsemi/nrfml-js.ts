@@ -43,7 +43,15 @@ export class DataSource {
 
 export class SerialPortBuilder {}
 
-export class ModemTraceDecoderOpts {}
+export class ModemTraceDecoderOpts {
+    static fromDatabaseFile() {
+        return new ModemTraceDecoderOpts();
+    }
+
+    static fromDatabaseConfig() {
+        return new ModemTraceDecoderOpts();
+    }
+}
 
 export class RawSinkOpts {}
 
