@@ -47,7 +47,7 @@ const parseNetworkType = (format: string): NetworkType => {
     return null as never;
 };
 
-const packetsToEvent = (packet: StreamPacket) =>
+export const packetsToEvent = (packet: StreamPacket) =>
     ({
         format:
             packet.kind.type === 'Dissectable'
@@ -59,7 +59,10 @@ const packetsToEvent = (packet: StreamPacket) =>
             packet.kind?.dissector.startsWith('lte_rrc')
                 ? parseNetworkType(packet.kind.dissector)
                 : undefined,
-        timestamp: (packet.timestamp.getMilliseconds() ?? 0) / 1000,
+        // todo: verify the fix
+        // was before:
+        // timestamp: (packet.timestamp.getMilliseconds() ?? 0) / 1000,
+        timestamp: packet.timestamp.getTime(),
         data: packet.kind.data,
         sequenceNumber: Number(packet.sequenceNumber),
     }) as TraceEvent;
