@@ -86,26 +86,18 @@ const getModemDbPath = (state: RootState, source: SourceFormat) => {
     if (source.type === 'device' && source.autoDetectedManualDbFile) {
         return source.autoDetectedManualDbFile;
     }
+
     const manualDbFilePath = getManualDbFilePath(state);
     if (manualDbFilePath !== undefined) {
         return manualDbFilePath;
     }
 
-    // return pathToFileURL(autoDetectDbRootFolder()).toString();
-    const path = join(
+    return join(
         autoDetectDbRootFolder(),
         `${TRACE_DATABASE_CONFIG_FILE}`,
     );
-
-    console.log('---> ', path);
-
-    return path;
 };
 
-/*
-14:29:52.457	Error when creating trace: Error: Found UUID e7a1c54a-b07c-4512-9c3e-8ecbbfe2641d from the trace stream, but the provided trace database has UUID 11866dbb-3d51-4226-8098-59dc6b9b5a50. This will most likely cause traces to be incorrectly decoded. Make sure that the provided trace has a corresponding database.
-14:29:52.457	Finished tracefile
- */
 const setupBuilder =
     (
         source: SourceFormat,
@@ -230,6 +222,7 @@ const setupBuilder =
         try {
             const task = await builder.spawn();
             onStartTrace(task);
+            // todo: catch error that will be thrown in 0.8.1
             await waitForTask(task);
         } finally {
             cleanup.forEach(f => f());
@@ -351,7 +344,6 @@ export const startTrace =
                     }
 
                     if (getRefreshOnStart(getState())) {
-                        console.log('formats', formats);
                         const timeout = formats.includes('live')
                             ? 10_000
                             : 5_000;
@@ -379,15 +371,15 @@ export const startTrace =
                     2)
                     // type: 'Dissectable': direction = status of AT command (send / received)
                      */
-                    // TODO: get lock fixed, then add back
-                    // try {
-                    //     const abortHandle = task.abortHandle();
-                    //     console.log('abortHandle', abortHandle);
-                    //     reloadHandler = () => abortHandle?.cancel();
-                    //     window.addEventListener('beforeunload', reloadHandler);
-                    // } catch (err) {
-                    //     console.log('Error try-catch abort: ', err);
-                    // }
+
+                    try {
+                        const abortHandle = task.abortHandle();
+                        reloadHandler = () => abortHandle?.cancel();
+                        window.addEventListener('beforeunload', reloadHandler);
+                    } catch (err) {
+                        // warn only as this is not critical for tracing
+                        logger.warn('Error when setting up trace abort ');
+                    }
                 },
                 true,
             ),
@@ -397,7 +389,6 @@ export const startTrace =
 
         logger.info('Finished tracefile');
 
-        // @ts-expect-error Recover after fix
         if (reloadHandler) {
             window.removeEventListener('beforeunload', reloadHandler);
         }
