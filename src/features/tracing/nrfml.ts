@@ -166,10 +166,6 @@ const setupBuilder =
                     break;
                 }
                 case 'live': {
-                    // TODO: wireshark must be conditional, do not turn it on every file load
-                    // const enableWireshark = false;
-                    // if (!enableWireshark) break;
-
                     const opts = new WiresharkSinkOpts()
                         .withWiresharkPath(
                             getWiresharkPath(getState()) ||
@@ -251,12 +247,13 @@ export const convertTraceFile =
         )
             .then(() => logger.info(`Successfully converted ${path} to pcap`))
             .catch(err => {
-                dispatch(setTraceIsStopped());
-                dispatch(setDetectingTraceDb(false));
-
                 logger.error(
                     `Failed conversion to pcap: ${describeError(err)}`,
                 );
+            })
+            .finally(() => {
+                dispatch(setTraceIsStopped());
+                dispatch(setDetectingTraceDb(false));
             });
         setLoading(false);
     };
@@ -392,10 +389,8 @@ export const startTrace =
             window.removeEventListener('beforeunload', reloadHandler);
         }
 
-        // stop tracing if Completed callback is called and we are only doing live tracing
-        if (formats.length === 1 && formats.includes('live')) {
-            dispatch(stopTrace());
-        }
+        // Clear the tracing state regardless of which sinks were used
+        dispatch(stopTrace());
     };
 
 export const readRawTrace =
@@ -411,7 +406,7 @@ export const readRawTrace =
         await dispatch(
             setupBuilder(
                 { type: 'file', path },
-                ['live'],
+                [],
                 () => {
                     dispatch(setTraceSourceFilePath(path));
                     logger.info(`Started reading trace from ${path}`);
