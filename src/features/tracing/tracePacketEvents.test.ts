@@ -26,7 +26,7 @@ describe('packetsToEvent', () => {
         expect(packetsToEvent(packet('at', data))).toEqual({
             format: 'AT',
             networkType: undefined,
-            timestamp: 1665058971613,
+            timestamp: 1791289371613,
             data,
             sequenceNumber: 42,
         });
