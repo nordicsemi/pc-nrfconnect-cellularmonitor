@@ -92,10 +92,7 @@ const getModemDbPath = (state: RootState, source: SourceFormat) => {
         return manualDbFilePath;
     }
 
-    return join(
-        autoDetectDbRootFolder(),
-        `${TRACE_DATABASE_CONFIG_FILE}`,
-    );
+    return join(autoDetectDbRootFolder(), `${TRACE_DATABASE_CONFIG_FILE}`);
 };
 
 const setupBuilder =
@@ -376,9 +373,11 @@ export const startTrace =
                         const abortHandle = task.abortHandle();
                         reloadHandler = () => abortHandle?.cancel();
                         window.addEventListener('beforeunload', reloadHandler);
-                    } catch (err) {
-                        // warn only as this is not critical for tracing
-                        logger.warn('Error when setting up trace abort ');
+                    } catch (e) {
+                        // warn as this is not critical for tracing
+                        logger.warn(
+                            `Error when setting up trace abort: ${describeError(e)}`,
+                        );
                     }
                 },
                 true,

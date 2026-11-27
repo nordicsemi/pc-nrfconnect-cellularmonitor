@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
-import { type StreamPacket } from '@nordicsemi/nrfml-js';
-
 import { events, notifyListeners } from '../../tracing/tracePacketEvents';
 import { convert } from '..';
 import { type State } from '../types';
@@ -114,23 +112,16 @@ const expectedState = {
     searchStatus2: true,
 } as Partial<State>;
 
-test.skip('Trace is read properly', () => {
+test('Trace is read properly', () => {
     let state = initialState();
-    let sequenceNumber = 0;
-    // @ts-expect-error todo: fix payloads
-    rawTraceData.forEach((jsonPacket: StreamPacket) => {
-        notifyListeners([
-            {
-                // type: '',
-                timestamp: new Date(),
-                kind: jsonPacket.kind,
-                // data: new Uint8Array(jsonPacket.packet_data.data),
-                sequenceNumber: BigInt((sequenceNumber += 1)),
-            },
-        ]);
+
+    rawTraceData.forEach(packet => {
+        notifyListeners([packet]);
     });
+
     events.forEach(packet => {
         state = convert(packet, state);
     });
+
     expect(state).toEqual(expectedState);
 });
