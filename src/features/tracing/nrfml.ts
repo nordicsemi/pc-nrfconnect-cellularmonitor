@@ -26,7 +26,6 @@ import {
 } from '@nordicsemiconductor/pc-nrfconnect-shared';
 import { NrfutilDeviceLib } from '@nordicsemiconductor/pc-nrfconnect-shared/nrfutil/device';
 import { join } from 'path';
-import { pathToFileURL } from 'url';
 
 import { displayName } from '../../../package.json';
 import type { RootState } from '../../app/appReducer';
@@ -82,19 +81,18 @@ const TRACE_DATABASE_CONFIG_FILE = 'config_v3.json';
 
 // Need to figure out what to do with the cache directory
 // Files from here aren't added to the cache, and files in the cache are not added to the config file
+// Function returns either path to trace DB config or URL to the folder
 const getModemDbPath = (state: RootState, source: SourceFormat) => {
     if (source.type === 'device' && source.autoDetectedManualDbFile) {
         return source.autoDetectedManualDbFile;
     }
+
     const manualDbFilePath = getManualDbFilePath(state);
     if (manualDbFilePath !== undefined) {
         return manualDbFilePath;
     }
 
-    return join(
-        pathToFileURL(autoDetectDbRootFolder()).toString(),
-        TRACE_DATABASE_CONFIG_FILE,
-    );
+    return join(autoDetectDbRootFolder(), `${TRACE_DATABASE_CONFIG_FILE}`);
 };
 
 const setupBuilder =
@@ -125,11 +123,18 @@ const setupBuilder =
                 source.type === 'file'
                     ? await DataSource.fromFile(source.path)
                     : await DataSource.fromSerialport(
-                          new SerialPortBuilder(source.port, 1000000),
+                          new SerialPortBuilder(source.port, 1_000_000),
                       ),
             )
             .withModemDecoder(
-                new ModemTraceDecoderOpts(getModemDbPath(getState(), source)),
+                // TODO: if selected DB manually -> must be fromDatabaseFile(); cleanup code, now not good
+                hasSelectedManualDbFile
+                    ? ModemTraceDecoderOpts.fromDatabaseFile(
+                          getModemDbPath(getState(), source),
+                      )
+                    : ModemTraceDecoderOpts.fromDatabaseConfig(
+                          getModemDbPath(getState(), source),
+                      ),
             )
             .withProgressCb(
                 makeProgressCallback(dispatch, {
@@ -194,7 +199,7 @@ const setupBuilder =
                 const { dataReceived } = getState().app.trace;
                 if (!dataReceived) dispatch(setTraceDataReceived(true));
 
-                if (data.format !== 'modem_trace') {
+                if (data.kind.type !== 'Raw') {
                     packets.push(data);
                 }
             });
@@ -210,6 +215,7 @@ const setupBuilder =
         try {
             const task = await builder.spawn();
             onStartTrace(task);
+            // todo: catch error that will be thrown in 0.8.1
             await waitForTask(task);
         } finally {
             cleanup.forEach(f => f());
@@ -241,12 +247,13 @@ export const convertTraceFile =
         )
             .then(() => logger.info(`Successfully converted ${path} to pcap`))
             .catch(err => {
-                dispatch(setTraceIsStopped());
-                dispatch(setDetectingTraceDb(false));
-
                 logger.error(
                     `Failed conversion to pcap: ${describeError(err)}`,
                 );
+            })
+            .finally(() => {
+                dispatch(setTraceIsStopped());
+                dispatch(setDetectingTraceDb(false));
             });
         setLoading(false);
     };
@@ -344,9 +351,31 @@ export const startTrace =
                         );
                     }
 
-                    const abortHandle = task.abortHandle();
-                    reloadHandler = () => abortHandle?.cancel();
-                    window.addEventListener('beforeunload', reloadHandler);
+                    /*
+                    // these are just comments to keep, will cleanup
+
+                    1)
+                    export interface StreamPacket {
+                      kind: PacketKind
+                      timestamp: Date
+                      metaFields?: string // JSON string; if file input: data_offset + data_size + modem_db_path; if live: data_offset + modem_db_path
+                      sequenceNumber: bigint // incrementing packet number, not used
+                    }
+
+                    2)
+                    // type: 'Dissectable': direction = status of AT command (send / received)
+                     */
+
+                    try {
+                        const abortHandle = task.abortHandle();
+                        reloadHandler = () => abortHandle?.cancel();
+                        window.addEventListener('beforeunload', reloadHandler);
+                    } catch (e) {
+                        // warn as this is not critical for tracing
+                        logger.warn(
+                            `Error when setting up trace abort: ${describeError(e)}`,
+                        );
+                    }
                 },
                 true,
             ),
@@ -360,10 +389,8 @@ export const startTrace =
             window.removeEventListener('beforeunload', reloadHandler);
         }
 
-        // stop tracing if Completed callback is called and we are only doing live tracing
-        if (formats.length === 1 && formats.includes('live')) {
-            dispatch(stopTrace());
-        }
+        // Clear the tracing state regardless of which sinks were used
+        dispatch(stopTrace());
     };
 
 export const readRawTrace =
@@ -379,7 +406,7 @@ export const readRawTrace =
         await dispatch(
             setupBuilder(
                 { type: 'file', path },
-                ['live'],
+                [],
                 () => {
                     dispatch(setTraceSourceFilePath(path));
                     logger.info(`Started reading trace from ${path}`);

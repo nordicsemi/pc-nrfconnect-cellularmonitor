@@ -59,7 +59,7 @@
         "xterm-headless": "^5.1.0"
     },
     "dependencies": {
-        "@nordicsemi/nrfml-js": "^0.7.0"
+        "@nordicsemi/nrfml-js": "^0.8.0"
     },
     "prettier": "@nordicsemiconductor/pc-nrfconnect-shared/config/prettier.config.js",
     "bundledDependencies": [

@@ -47,14 +47,23 @@ const parseNetworkType = (format: string): NetworkType => {
     return null as never;
 };
 
-const packetsToEvent = (packet: StreamPacket) =>
+export const packetsToEvent = (packet: StreamPacket) =>
     ({
-        format: formatToLabel(packet.format || ''),
-        networkType: packet.format?.startsWith('lte_rrc')
-            ? parseNetworkType(packet.format)
-            : undefined,
-        timestamp: (packet.timestamp.getMilliseconds() ?? 0) / 1000,
-        data: packet.data,
+        format:
+            packet.kind.type === 'Dissectable'
+                ? formatToLabel(packet.kind.dissector || '')
+                : '',
+        // was: packet.format?.startsWith('lte_rrc')
+        networkType:
+            packet.kind?.type === 'Dissectable' &&
+            packet.kind?.dissector.startsWith('lte_rrc')
+                ? parseNetworkType(packet.kind.dissector)
+                : undefined,
+        // todo: verify the fix
+        // was before:
+        // timestamp: (packet.timestamp.getMilliseconds() ?? 0) / 1000,
+        timestamp: packet.timestamp.getTime(),
+        data: packet.kind.data,
         sequenceNumber: Number(packet.sequenceNumber),
     }) as TraceEvent;
 

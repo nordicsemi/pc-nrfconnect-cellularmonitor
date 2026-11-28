@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { waitForTask } from '@nordicsemi/nrfml-js';
 
 import {
     act,
@@ -14,6 +15,7 @@ import {
     mockedDataDir,
     render,
     screen,
+    waitFor,
 } from '../../common/testUtils';
 import {
     setAvailableSerialPorts,
@@ -106,6 +108,22 @@ describe('TraceCollector', () => {
         jest.useRealTimers();
     });
 
+    it('shows Stop for as long as the trace task is running', async () => {
+        (waitForTask as jest.Mock).mockImplementationOnce(
+            () => new Promise(() => {}),
+        );
+
+        jest.useFakeTimers();
+        render(<TraceCollector />, serialPortActions(['raw']));
+        act(() => jest.runAllTimers());
+        fireEvent.click(screen.getByText('Start'));
+        act(jest.runOnlyPendingTimers);
+
+        expect(await screen.findByText('Stop')).toBeInTheDocument();
+
+        jest.useRealTimers();
+    });
+
     describe('sink configurations', () => {
         beforeEach(() => {
             jest.resetAllMocks();
@@ -126,11 +144,12 @@ describe('TraceCollector', () => {
             act(() => jest.runAllTimers());
             const calledFunctions = getNrfmlCalledWithSinks(sinks);
             fireEvent.click(screen.getByText('Start'));
-            await screen.findByText('Stop');
 
-            calledFunctions.forEach(f => {
-                expect(f).toHaveBeenCalled();
-            });
+            await waitFor(() =>
+                calledFunctions.forEach(f => {
+                    expect(f).toHaveBeenCalled();
+                }),
+            );
         });
 
         it('should call nrfml start with selected sink configurations as arguments', async () => {
@@ -142,11 +161,12 @@ describe('TraceCollector', () => {
             act(() => jest.runAllTimers());
             const calledFunctions = getNrfmlCalledWithSinks(sinks);
             fireEvent.click(screen.getByText('Start'));
-            await screen.findByText('Stop');
 
-            calledFunctions.forEach(f => {
-                expect(f).toHaveBeenCalled();
-            });
+            await waitFor(() =>
+                calledFunctions.forEach(f => {
+                    expect(f).toHaveBeenCalled();
+                }),
+            );
         });
 
         it('should call nrfml start with selected sink configurations as arguments', async () => {
@@ -162,11 +182,12 @@ describe('TraceCollector', () => {
             act(() => jest.runAllTimers());
             const calledFunctions = getNrfmlCalledWithSinks(sinks);
             fireEvent.click(screen.getByText('Start'));
-            await screen.findByText('Stop');
 
-            calledFunctions.forEach(f => {
-                expect(f).toHaveBeenCalled();
-            });
+            await waitFor(() =>
+                calledFunctions.forEach(f => {
+                    expect(f).toHaveBeenCalled();
+                }),
+            );
         });
     });
 });

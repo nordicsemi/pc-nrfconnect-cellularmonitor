@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-4-Clause
  */
 
+// import { TraceTaskBuilder } from '@nordicsemi/nrfml-js';
 import { testUtils } from '@nordicsemiconductor/pc-nrfconnect-shared/test';
 import path from 'path';
 
@@ -74,8 +75,60 @@ describe('nrfml', () => {
                 type: 'trace/setTraceIsStarted',
             },
             { type: setDetectingTraceDb.type, payload: false },
+            { type: setTraceIsStopped.type, payload: undefined },
+            { type: setDetectingTraceDb.type, payload: false },
         ]);
     });
+
+    // label: generated; todo: analyze and uncomment
+    // Regression test: a successful conversion used to clear the tracing state
+    // only in the .catch() branch, which left `taskAbortHandle` set for the
+    // rest of the session. `getIsTracing` then stayed true and disabled UI
+    // such as the modem trace database dropdown.
+    // it('clears the tracing state after a successful conversion', async () => {
+    //     await store.dispatch(convertTraceFile('somePath.mtrace'));
+    //
+    //     const types = store.getActions().map(action => action.type);
+    //
+    //     expect(types).toContain(setTraceIsStarted.type);
+    //     expect(types).toContain(setTraceIsStopped.type);
+    //     expect(types.lastIndexOf(setTraceIsStopped.type)).toBeGreaterThan(
+    //         types.indexOf(setTraceIsStarted.type),
+    //     );
+    // });
+
+    // label: generated
+    // describe('which sinks a file is read with', () => {
+    //     afterEach(() => {
+    //         jest.restoreAllMocks();
+    //     });
+    //
+    //     // Regression test: "Load trace file..." used to request the 'live'
+    //     // sink, which is the Wireshark sink, so it launched Wireshark as well
+    //     // as filling the in-app dashboard. The dashboard is fed by the
+    //     // user-data callback and needs no sink at all.
+    //     it('does not attach the Wireshark sink when reading a file into the app', async () => {
+    //         const wiresharkSink = jest.spyOn(
+    //             TraceTaskBuilder.prototype,
+    //             'withWiresharkSink',
+    //         );
+    //
+    //         await store.dispatch(readRawTrace('somePath.mtrace', () => {}));
+    //
+    //         expect(wiresharkSink).not.toHaveBeenCalled();
+    //     });
+    //
+    //     it('attaches the Wireshark sink when opening a file in Wireshark', async () => {
+    //         const wiresharkSink = jest.spyOn(
+    //             TraceTaskBuilder.prototype,
+    //             'withWiresharkSink',
+    //         );
+    //
+    //         await store.dispatch(convertTraceFile('somePath.mtrace'));
+    //
+    //         expect(wiresharkSink).toHaveBeenCalled();
+    //     });
+    // });
 
     describe('tracing', () => {
         beforeEach(() => {
@@ -109,6 +162,7 @@ describe('nrfml', () => {
                     },
                 },
                 { type: setDetectingTraceDb.type, payload: false },
+                { type: setTraceIsStopped.type, payload: undefined },
             ]);
         });
 
@@ -137,10 +191,11 @@ describe('nrfml', () => {
                     },
                 },
                 { type: setDetectingTraceDb.type, payload: false },
+                { type: setTraceIsStopped.type, payload: undefined },
             ]);
         });
 
-        it('does not create a progress config for live traces', async () => {
+        it('does not create a progress config for the live sink alongside raw', async () => {
             await store.dispatch(startTrace(['raw', 'live']));
             expect(store.getActions()).toEqual([
                 { type: resetDashboardState.type, payload: undefined },
@@ -165,10 +220,11 @@ describe('nrfml', () => {
                     },
                 },
                 { type: setDetectingTraceDb.type, payload: false },
+                { type: setTraceIsStopped.type, payload: undefined },
             ]);
         });
 
-        it('does not create a progress config for live traces', async () => {
+        it('does not create a progress config for a live-only trace', async () => {
             await store.dispatch(startTrace(['live']));
 
             expect(store.getActions()).toEqual([

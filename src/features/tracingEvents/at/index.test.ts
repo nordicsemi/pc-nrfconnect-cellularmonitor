@@ -114,20 +114,14 @@ const expectedState = {
 
 test('Trace is read properly', () => {
     let state = initialState();
-    let sequenceNumber = 0;
-    rawTraceData.forEach(jsonPacket => {
-        notifyListeners([
-            {
-                type: '',
-                timestamp: new Date(),
-                format: jsonPacket.format,
-                data: new Uint8Array(jsonPacket.packet_data.data),
-                sequenceNumber: BigInt((sequenceNumber += 1)),
-            },
-        ]);
+
+    rawTraceData.forEach(packet => {
+        notifyListeners([packet]);
     });
+
     events.forEach(packet => {
         state = convert(packet, state);
     });
+
     expect(state).toEqual(expectedState);
 });
